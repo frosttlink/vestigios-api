@@ -3,7 +3,7 @@ services:
     name: vestigios-api
     env: node
     plan: free
-    buildCommand: echo "skip" && true
+    buildCommand: npm install
     startCommand: node dist/index.js
     envVars:
       - key: YOUTUBE_API_KEY
