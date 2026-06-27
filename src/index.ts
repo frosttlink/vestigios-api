@@ -117,7 +117,24 @@ app.post("/api/refresh", async (_req, res) => {
  *           type: integer
  */
 
+async function autoRefresh() {
+  try {
+    const channel = await getChannelByHandle(CHANNEL_HANDLE);
+    if (!channel) {
+      console.warn("⚠️ Canal não encontrado no YouTube — cache vazio após startup");
+      return;
+    }
+    const videos = await getLatestVideos(channel.id);
+    await setCache(channel, videos);
+    console.log(`✅ Cache inicializado com ${videos.length} vídeos`);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Erro desconhecido";
+    console.error("❌ Falha ao inicializar cache no startup:", message);
+  }
+}
+
 app.listen(PORT, () => {
   console.log(`🎯 Vestígios API rodando em http://localhost:${PORT}`);
   console.log(`📘 Swagger UI: http://localhost:${PORT}/api-docs`);
+  autoRefresh();
 });
