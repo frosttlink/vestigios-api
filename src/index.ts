@@ -1,5 +1,7 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
+import type { Request, Response } from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./swagger.js";
@@ -19,7 +21,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api", videosRouter);
 app.use("/api", channelRouter);
 
-app.get("/api/status", async (_req, res) => {
+app.get("/api/status", async (_req: Request, res: Response) => {
   const cache = await getCache();
   res.json({
     channelHandle: CHANNEL_HANDLE,
@@ -30,7 +32,7 @@ app.get("/api/status", async (_req, res) => {
   });
 });
 
-app.post("/api/refresh", async (_req, res) => {
+app.post("/api/refresh", async (_req: Request, res: Response) => {
   try {
     const channel = await getChannelByHandle(CHANNEL_HANDLE);
 
