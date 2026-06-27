@@ -1,3 +1,4 @@
-declare const router: import("express-serve-static-core").Router;
-export default router;
+import type { FastifyPluginAsync } from "fastify";
+declare const channelPlugin: FastifyPluginAsync;
+export default channelPlugin;
 //# sourceMappingURL=channel.d.ts.map

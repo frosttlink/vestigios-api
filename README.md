@@ -5,8 +5,9 @@ API separada que inspeciona o canal do YouTube do **Vestígios RPG** e expõe os
 ## Stack
 
 - **Runtime:** Node.js + TypeScript
-- **Framework:** Express 5
-- **Documentação:** Swagger (OpenAPI 3.0)
+- **Framework:** Fastify 5
+- **Validação:** Zod (schemas + runtime)
+- **Documentação:** Swagger (OpenAPI 3.0, gerado automaticamente das schemas Zod)
 - **Cache:** JSON em disco + memória
 - **Deploy:** Render (free tier) + cron-job.org
 

@@ -1,1 +1,1 @@
-{"version":3,"file":"channel.d.ts","sourceRoot":"","sources":["../../src/routes/channel.ts"],"names":[],"mappings":"AAGA,QAAA,MAAM,MAAM,4CAAW,CAAC;AA+BxB,eAAe,MAAM,CAAC"}
+{"version":3,"file":"channel.d.ts","sourceRoot":"","sources":["../../src/routes/channel.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,kBAAkB,EAAE,MAAM,SAAS,CAAC;AAelD,QAAA,MAAM,aAAa,EAAE,kBAuBpB,CAAC;AAEF,eAAe,aAAa,CAAC"}

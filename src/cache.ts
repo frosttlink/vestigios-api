@@ -1,16 +1,11 @@
-import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { YouTubeVideo, YouTubeChannel } from "./youtube.js";
+import type { CacheData, YouTubeChannel, YouTubeVideo } from "./schemas/youtube.js";
+import { CacheDataSchema } from "./schemas/youtube.js";
 
 const CACHE_DIR = path.resolve("cache");
 const CACHE_FILE = path.join(CACHE_DIR, "videos.json");
-
-interface CacheData {
-  channel: YouTubeChannel | null;
-  videos: YouTubeVideo[];
-  updatedAt: string;
-}
 
 let inMemory: CacheData | null = null;
 
@@ -23,7 +18,7 @@ async function ensureCacheDir(): Promise<void> {
 async function readCacheFromDisk(): Promise<CacheData | null> {
   try {
     const raw = await readFile(CACHE_FILE, "utf-8");
-    return JSON.parse(raw) as CacheData;
+    return CacheDataSchema.parse(JSON.parse(raw));
   } catch {
     return null;
   }
@@ -54,7 +49,7 @@ export async function setCache(
 }
 
 export function getCacheAgeInMinutes(): number {
-  if (!inMemory?.updatedAt) return Infinity;
+  if (!inMemory?.updatedAt) return Number.POSITIVE_INFINITY;
   const elapsed = Date.now() - new Date(inMemory.updatedAt).getTime();
   return Math.floor(elapsed / 60_000);
 }

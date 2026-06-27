@@ -56,9 +56,7 @@ export async function getLatestVideos(channelId, maxResults = 10) {
     const searchData = (await searchRes.json());
     if (!searchData.items?.length)
         return [];
-    const videoIds = searchData
-        .items.map((item) => item.id.videoId)
-        .filter(Boolean);
+    const videoIds = searchData.items.map((item) => item.id.videoId).filter(Boolean);
     const videosUrl = buildUrl("/videos", {
         part: "snippet",
         id: videoIds.join(","),

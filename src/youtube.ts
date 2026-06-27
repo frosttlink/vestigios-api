@@ -1,31 +1,4 @@
-export interface YouTubeVideo {
-  id: string;
-  title: string;
-  description: string;
-  publishedAt: string;
-  thumbnails: {
-    default: { url: string; width: number; height: number };
-    medium: { url: string; width: number; height: number };
-    high: { url: string; width: number; height: number };
-  };
-  channelTitle: string;
-  channelId: string;
-}
-
-export interface YouTubeChannel {
-  id: string;
-  title: string;
-  description: string;
-  customUrl: string;
-  thumbnails: {
-    default: { url: string; width: number; height: number };
-    medium: { url: string; width: number; height: number };
-    high: { url: string; width: number; height: number };
-  };
-  subscriberCount: number;
-  videoCount: number;
-  viewCount: number;
-}
+import type { YouTubeChannel, YouTubeVideo } from "./schemas/youtube.js";
 
 interface SearchListResponse {
   items: {
@@ -83,9 +56,7 @@ function buildUrl(path: string, params: Record<string, string>): string {
   return `${YOUTUBE_API_BASE}${path}?${searchParams.toString()}`;
 }
 
-export async function getChannelByHandle(
-  handle: string,
-): Promise<YouTubeChannel | null> {
+export async function getChannelByHandle(handle: string): Promise<YouTubeChannel | null> {
   const url = buildUrl("/channels", {
     part: "snippet,statistics",
     forHandle: handle,
@@ -141,9 +112,7 @@ export async function getLatestVideos(
 
   if (!searchData.items?.length) return [];
 
-  const videoIds = searchData
-    .items.map((item) => item.id.videoId)
-    .filter(Boolean);
+  const videoIds = searchData.items.map((item) => item.id.videoId).filter(Boolean);
 
   const videosUrl = buildUrl("/videos", {
     part: "snippet",

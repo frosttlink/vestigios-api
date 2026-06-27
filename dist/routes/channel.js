@@ -1,31 +1,29 @@
-import { Router } from "express";
+import { z } from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
 import { getCache } from "../cache.js";
-const router = Router();
-/**
- * @openapi
- * /api/channel:
- *   get:
- *     summary: Dados do canal do YouTube
- *     description: Informações do canal Vestígios RPG (inscritos, total de vídeos, etc).
- *     tags:
- *       - Canal
- *     responses:
- *       200:
- *         description: Dados do canal
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/YouTubeChannel'
- *       503:
- *         description: Cache vazio
- */
-router.get("/channel", async (_req, res) => {
-    const cache = await getCache();
-    if (!cache?.channel) {
-        res.status(503).json({ error: "Cache vazio. Faça um POST /api/refresh primeiro." });
-        return;
-    }
-    res.json({ channel: cache.channel, updatedAt: cache.updatedAt });
+import { YouTubeChannelSchema } from "../schemas/youtube.js";
+const ResponseChannelSchema = z.object({
+    channel: YouTubeChannelSchema,
+    updatedAt: z.string(),
 });
-export default router;
+const ErrorSchema = z.object({
+    error: z.string(),
+});
+const channelPlugin = async (app) => {
+    app.get("/channel", {
+        schema: {
+            response: {
+                200: zodToJsonSchema(ResponseChannelSchema, { target: "openApi3" }),
+                503: zodToJsonSchema(ErrorSchema, { target: "openApi3" }),
+            },
+        },
+    }, async (_req, reply) => {
+        const cache = await getCache();
+        if (!cache?.channel) {
+            return reply.serviceUnavailable("Cache vazio. Faça um POST /api/refresh primeiro.");
+        }
+        return { channel: cache.channel, updatedAt: cache.updatedAt };
+    });
+};
+export default channelPlugin;
 //# sourceMappingURL=channel.js.map

@@ -1,6 +1,7 @@
-import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { CacheDataSchema } from "./schemas/youtube.js";
 const CACHE_DIR = path.resolve("cache");
 const CACHE_FILE = path.join(CACHE_DIR, "videos.json");
 let inMemory = null;
@@ -12,7 +13,7 @@ async function ensureCacheDir() {
 async function readCacheFromDisk() {
     try {
         const raw = await readFile(CACHE_FILE, "utf-8");
-        return JSON.parse(raw);
+        return CacheDataSchema.parse(JSON.parse(raw));
     }
     catch {
         return null;
@@ -39,7 +40,7 @@ export async function setCache(channel, videos) {
 }
 export function getCacheAgeInMinutes() {
     if (!inMemory?.updatedAt)
-        return Infinity;
+        return Number.POSITIVE_INFINITY;
     const elapsed = Date.now() - new Date(inMemory.updatedAt).getTime();
     return Math.floor(elapsed / 60_000);
 }
